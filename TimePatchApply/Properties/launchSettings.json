@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "TimePatcherApply": {
-      "commandName": "Project",
-      "commandLineArgs": "\"D:\\Users\\Kirito\\Desktop\\reverse_engineering\\time_travelers\\game_files\\retail\\Time Travelers Original.3ds\" D:\\Users\\Kirito\\Desktop\\reverse_engineering\\time_travelers\\game_files\\retail\\patch_work\\final_patch.pat D:\\Users\\Kirito\\Desktop\\reverse_engineering\\time_travelers\\game_files\\retail\\patch_work\\patch_ls"
-    }
-  }
-}
