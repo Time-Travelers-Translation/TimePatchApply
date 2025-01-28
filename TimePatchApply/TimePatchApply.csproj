@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+	<!--<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="morelinq" Version="3.3.2" />
+    <PackageReference Include="Serilog" Version="2.11.0-dev-01367" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-preview.7.21377.19" />
+    <PackageReference Include="VCDiff" Version="3.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Komponent">
+      <HintPath>Libs\Komponent.dll</HintPath>
+    </Reference>
+    <Reference Include="Kompression">
+      <HintPath>Libs\Kompression.dll</HintPath>
+    </Reference>
+    <Reference Include="Kontract">
+      <HintPath>Libs\Kontract.dll</HintPath>
+    </Reference>
+    <Reference Include="Kore">
+      <HintPath>Libs\Kore.dll</HintPath>
+    </Reference>
+    <Reference Include="Kryptography">
+      <HintPath>Libs\Kryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="plugin_criware">
+      <HintPath>Libs\plugin_criware.dll</HintPath>
+    </Reference>
+    <Reference Include="plugin_nintendo">
+      <HintPath>Libs\plugin_nintendo.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
