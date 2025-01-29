@@ -4,7 +4,7 @@ It produces a Luma3DS LayeredFS-ready set of files.
 
 ## Usage
 
-The tool can be used either by double clicking, which enters a "Guided Mode", or by calling it with command line arguments, which enters "Inline Mode"
+The tool can be used either by double clicking, which enters a "Guided Mode", or by calling it with command line arguments, which enters "Inline Mode".
 
 ### Guided Mode
 
