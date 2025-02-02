@@ -47,53 +47,56 @@ namespace TimePatchApply
                 Console.WriteLine();
                 Console.WriteLine($"The LayeredFS-ready files can be found in \"{Path.GetFullPath(layeredFsFolder)}\".");
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Press any key to close this application.");
+            Console.ReadKey();
         }
 
         private static void GetPathArguments(string[] args, out string gamePath, out string patchPath, out string outputPath)
         {
             // Get cia or 3ds game path
-            Console.WriteLine("Enter the path to the .3ds or .cia of Time Travelers:");
+            Console.WriteLine("Enter the file path to Time Travelers (.3ds or .cia):");
             Console.Write("> ");
 
             gamePath = args.Length > 0 ? args[0] : Console.ReadLine();
+            gamePath = gamePath?.Trim('"').Trim() ?? string.Empty;
+
             if (args.Length > 0)
                 Console.WriteLine(args[0]);
             Console.WriteLine();
 
             // Get patch file
-            Console.WriteLine("Enter the path to the patch file (.pat):");
+            Console.WriteLine("Enter the file path to the patch file (.pat):");
             Console.Write("> ");
 
             patchPath = args.Length > 1 ? args[1] : Console.ReadLine();
+            patchPath = patchPath?.Trim('"').Trim() ?? string.Empty;
+
             if (args.Length > 1)
                 Console.WriteLine(args[1]);
             Console.WriteLine();
 
             // Get output path
-            Console.WriteLine("Enter the directory, in which the LayeredFS structure will be created:");
+            Console.WriteLine("Enter any directory, in which the LayeredFS patch will be written to:");
             Console.Write("> ");
 
             outputPath = args.Length > 2 ? args[2] : Console.ReadLine();
+            outputPath = outputPath?.Trim('"').Trim() ?? string.Empty;
+
             if (args.Length > 2)
                 Console.WriteLine(args[2]);
             Console.WriteLine();
         }
-
-        // TODO: Create CPK from scratch without extracting 2GB donor CPK first?
+        
         private static async Task<string> ApplyPatch(string gamePath, string patchPath, string outputPath)
         {
-            // Try to open patch file
-            if (!TryLoadPatch(patchPath, out PatchFile patchFile))
-                return null;
-
             // Try to open game
+            Console.Write("Opening game... ");
+
             var partitions = await LoadGamePartitions(gamePath);
             if (partitions == null)
                 return null;
-
-            // Create folder structure for LayeredFS
-            var titleIdFolder = Path.Combine(outputPath, "000400000008C600");
-            Directory.CreateDirectory(titleIdFolder);
 
             // Try to open GameData.cxi
             IArchiveFileInfo gameDataFile = partitions.FirstOrDefault(x => x.FilePath == "/GameData.cxi");
@@ -120,6 +123,16 @@ namespace TimePatchApply
 
             if (!TryLoadCpkFiles(cpkArchiveFileStream, gamePath, out Cpk cpkState, out IList<IArchiveFileInfo> cpkFiles))
                 return null;
+
+            Console.WriteLine("Done");
+
+            // Try to open patch file
+            Console.Write("Opening patch file... ");
+
+            if (!TryLoadPatch(patchPath, out PatchFile patchFile))
+                return null;
+
+            Console.WriteLine("Done");
 
             // Apply patches from patch file
             Console.Write("Apply patches to patch.cpk... ");
@@ -161,6 +174,10 @@ namespace TimePatchApply
 
             Console.WriteLine("Done");
 
+            // Create folder structure for LayeredFS
+            var titleIdFolder = Path.Combine(outputPath, "000400000008C600");
+            Directory.CreateDirectory(titleIdFolder);
+
             // Save patch.cpk
             Console.Write("Save changes to patch.cpk...");
 
@@ -198,7 +215,7 @@ namespace TimePatchApply
                         var codeOutput = File.OpenWrite(Path.Combine(titleIdFolder, "code.bin"));
 
                         output.Position = 0;
-                        output.CopyTo(codeOutput);
+                        await output.CopyToAsync(codeOutput);
 
                         output.Close();
                         codeOutput.Close();
@@ -238,7 +255,7 @@ namespace TimePatchApply
                         var codeOutput = File.OpenWrite(Path.Combine(titleIdFolder, "exheader.bin"));
 
                         output.Position = 0;
-                        output.CopyTo(codeOutput);
+                        await output.CopyToAsync(codeOutput);
 
                         output.Close();
                         codeOutput.Close();
@@ -320,7 +337,10 @@ namespace TimePatchApply
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Could not load GameData.cxi from \"{gamePath}\". Error: {e.Message}");
+                Console.WriteLine($"Could not load game data from \"{gamePath}\". Error: {e.Message}");
+                Console.WriteLine();
+                Console.WriteLine("Make sure you use a decrypted .3ds or .cia!");
+
                 return false;
             }
         }
@@ -399,9 +419,10 @@ namespace TimePatchApply
             catch (Exception e)
             {
                 Console.WriteLine($"Could not load file \"{fileStream.Name}\". Error: {e.Message}");
+                Console.WriteLine();
                 Console.WriteLine("Possible reasons could be that the file is not a .3ds or .cia, or is not decrypted.");
 
-                throw e;
+                return false;
             }
         }
 
