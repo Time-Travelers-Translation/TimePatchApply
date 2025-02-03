@@ -48,9 +48,12 @@ namespace TimePatchApply
                 Console.WriteLine($"The LayeredFS-ready files can be found in \"{Path.GetFullPath(layeredFsFolder)}\".");
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Press any key to close this application.");
-            Console.ReadKey();
+            if (args.Length < 3)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Press any key to close this application.");
+                Console.ReadKey();
+            }
         }
 
         private static void GetPathArguments(string[] args, out string gamePath, out string patchPath, out string outputPath)
